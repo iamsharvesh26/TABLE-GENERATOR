@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time Table Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #2c3e50;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: linear-gradient(135deg, #3498db, #2c3e50);
+            color: white;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 1.3rem;
+            opacity: 0.9;
+        }
+        
+        .section {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease;
+        }
+        
+        .section:hover {
+            transform: translateY(-5px);
+        }
+        
+        .section-title {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #3498db;
+            border-bottom: 3px solid #ecf0f1;
+            padding-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-title i {
+            margin-right: 12px;
+            font-size: 1.6rem;
+        }
+        
+        .exam-section {
+            border-left: 6px solid #e74c3c;
+        }
+        
+        .tutorial-section {
+            border-left: 6px solid #f39c12;
+        }
+        
+        .class-section {
+            border-left: 6px solid #2ecc71;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        input, button {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+        
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-success {
+            background-color: #2ecc71;
+        }
+        
+        .btn-success:hover {
+            background-color: #27ae60;
+        }
+        
+        .btn-warning {
+            background-color: #f39c12;
+        }
+        
+        .btn-warning:hover {
+            background-color: #e67e22;
+        }
+        
+        .btn-danger {
+            background-color: #e74c3c;
+        }
+        
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .controls button {
+            flex: 1;
+            padding: 12px;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            margin-top: 20px;
+            border: 1px solid #e1e1e1;
+            border-radius: 8px;
+            padding: 15px;
+            background: #fafafa;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            min-width: 800px;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 14px;
+            text-align: center;
+            min-width: 130px;
+        }
+        
+        th {
+            background-color: #3498db;
+            color: white;
+            font-weight: 600;
+            position: relative;
+        }
+        
+        th.header-cell {
+            position: relative;
+        }
+        
+        th.header-cell input {
+            background: transparent;
+            border: none;
+            color: white;
+            font-weight: 600;
+            text-align: center;
+            width: 100%;
+            padding: 8px;
+            font-size: 1rem;
+        }
+        
+        th.header-cell input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        th.header-cell input:focus {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            outline: none;
+        }
+        
+        td {
+            background-color: white;
+            position: relative;
+            transition: background-color 0.2s;
+        }
+        
+        td:hover {
+            background-color: #f8f9fa;
+        }
+        
+        td input {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            background: transparent;
+            text-align: center;
+            font-size: 1rem;
+        }
+        
+        td input:focus {
+            outline: 2px solid #3498db;
+            background-color: #f0f8ff;
+            border-radius: 4px;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .instructions {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-top: 30px;
+            border-left: 5px solid #3498db;
+        }
+        
+        .instructions h3 {
+            color: #3498db;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+        
+        .instructions ol {
+            padding-left: 25px;
+        }
+        
+        .instructions li {
+            margin-bottom: 12px;
+            line-height: 1.7;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 25px;
+            color: #7f8c8d;
+            font-size: 0.95rem;
+            border-top: 1px solid #ecf0f1;
+        }
+        
+        @media (max-width: 768px) {
+            .controls {
+                flex-direction: column;
+            }
+            
+            th, td {
+                padding: 10px 8px;
+                font-size: 0.9rem;
+                min-width: 100px;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .section {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Time Table Generator</h1>
+            <p class="subtitle">Create and customize multiple time tables for exams, tutorials, and classes</p>
+        </header>
+        
+        <!-- Exam Time Table Section -->
+        <section class="section exam-section">
+            <h2 class="section-title">
+                <i>📅</i> Exam Time Table
+            </h2>
+            <div class="form-group">
+                <label for="exam-title">Table Title:</label>
+                <input type="text" id="exam-title" placeholder="e.g., Final Exam Schedule" value="EXAM TIME TABLE">
+            </div>
+            <div class="form-group">
+                <label for="exam-rows">Number of Rows:</label>
+                <input type="number" id="exam-rows" min="1" max="50" value="6">
+            </div>
+            <div class="form-group">
+                <label for="exam-columns">Number of Columns:</label>
+                <input type="number" id="exam-columns" min="1" max="20" value="8">
+            </div>
+            <button id="exam-generate-btn">Generate Exam Table</button>
+            
+            <div class="table-container hidden" id="exam-table-container">
+                <div class="controls">
+                    <button id="exam-edit-btn" class="btn-success">Edit Table</button>
+                    <button id="exam-export-btn">Export as Text</button>
+                    <button id="exam-reset-btn" class="btn-danger">Reset Table</button>
+                </div>
+                <div id="exam-table-wrapper"></div>
+            </div>
+        </section>
+        
+        <!-- Tutorial Section -->
+        <section class="section tutorial-section">
+            <h2 class="section-title">
+                <i>📚</i> Tutorial Section
+            </h2>
+            <div class="form-group">
+                <label for="tutorial-title">Table Title:</label>
+                <input type="text" id="tutorial-title" placeholder="e.g., Weekly Tutorial Schedule" value="TUTORIAL SECTION">
+            </div>
+            <div class="form-group">
+                <label for="tutorial-rows">Number of Rows:</label>
+                <input type="number" id="tutorial-rows" min="1" max="50" value="6">
+            </div>
+            <div class="form-group">
+                <label for="tutorial-columns">Number of Columns:</label>
+                <input type="number" id="tutorial-columns" min="1" max="20" value="8">
+            </div>
+            <button id="tutorial-generate-btn">Generate Tutorial Table</button>
+            
+            <div class="table-container hidden" id="tutorial-table-container">
+                <div class="controls">
+                    <button id="tutorial-edit-btn" class="btn-success">Edit Table</button>
+                    <button id="tutorial-export-btn">Export as Text</button>
+                    <button id="tutorial-reset-btn" class="btn-danger">Reset Table</button>
+                </div>
+                <div id="tutorial-table-wrapper"></div>
+            </div>
+        </section>
+        
+        <!-- Class Time Table Section -->
+        <section class="section class-section">
+            <h2 class="section-title">
+                <i>🏫</i> Class Time Table
+            </h2>
+            <div class="form-group">
+                <label for="class-title">Table Title:</label>
+                <input type="text" id="class-title" placeholder="e.g., Weekly Class Schedule" value="CLASS TIME TABLE">
+            </div>
+            <div class="form-group">
+                <label for="class-rows">Number of Rows:</label>
+                <input type="number" id="class-rows" min="1" max="50" value="6">
+            </div>
+            <div class="form-group">
+                <label for="class-columns">Number of Columns:</label>
+                <input type="number" id="class-columns" min="1" max="20" value="8">
+            </div>
+            <button id="class-generate-btn">Generate Class Table</button>
+            
+            <div class="table-container hidden" id="class-table-container">
+                <div class="controls">
+                    <button id="class-edit-btn" class="btn-success">Edit Table</button>
+                    <button id="class-export-btn">Export as Text</button>
+                    <button id="class-reset-btn" class="btn-danger">Reset Table</button>
+                </div>
+                <div id="class-table-wrapper"></div>
+            </div>
+        </section>
+        
+        <div class="instructions">
+            <h3>How to Use This Generator</h3>
+            <ol>
+                <li><strong>Set Table Details:</strong> For each section, enter a title and specify the number of rows and columns.</li>
+                <li><strong>Generate Table:</strong> Click the "Generate" button to create the table structure.</li>
+                <li><strong>Edit Headers:</strong> Click on column headers to rename them (e.g., "Date", "Time", "Course Code", "Venue").</li>
+                <li><strong>Enter Data:</strong> Click "Edit Table" and then click on any cell to enter your data.</li>
+                <li><strong>Export:</strong> Use "Export as Text" to copy your table for sharing or printing.</li>
+                <li><strong>Reset:</strong> Use "Reset Table" to clear all data and start over.</li>
+            </ol>
+        </div>
+        
+        <footer>
+            <p>Time Table Generator &copy; 2023 | Useful for semester schedules, exam timetables, and class schedules</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize table data for each section
+            const tableData = {
+                exam: [],
+                tutorial: [],
+                class: []
+            };
+            
+            const isEditing = {
+                exam: false,
+                tutorial: false,
+                class: false
+            };
+            
+            // Setup event listeners for each section
+            setupTableSection('exam');
+            setupTableSection('tutorial');
+            setupTableSection('class');
+            
+            function setupTableSection(section) {
+                const generateBtn = document.getElementById(`${section}-generate-btn`);
+                const editBtn = document.getElementById(`${section}-edit-btn`);
+                const exportBtn = document.getElementById(`${section}-export-btn`);
+                const resetBtn = document.getElementById(`${section}-reset-btn`);
+                const tableContainer = document.getElementById(`${section}-table-container`);
+                const tableWrapper = document.getElementById(`${section}-table-wrapper`);
+                
+                // Generate table structure
+                generateBtn.addEventListener('click', function() {
+                    const title = document.getElementById(`${section}-title`).value || `${section.charAt(0).toUpperCase() + section.slice(1)} Table`;
+                    const rows = parseInt(document.getElementById(`${section}-rows`).value);
+                    const columns = parseInt(document.getElementById(`${section}-columns`).value);
+                    
+                    if (rows < 1 || columns < 1) {
+                        alert('Please enter valid numbers for rows and columns.');
+                        return;
+                    }
+                    
+                    // Initialize table data
+                    tableData[section] = [];
+                    for (let i = 0; i < rows; i++) {
+                        tableData[section][i] = [];
+                        for (let j = 0; j < columns; j++) {
+                            tableData[section][i][j] = '';
+                        }
+                    }
+                    
+                    // Create table HTML
+                    let tableHTML = `<h3 style="text-align:center; margin-bottom:20px; color:#2c3e50;">${title}</h3>`;
+                    tableHTML += `<table id="${section}-table"><thead><tr>`;
+                    
+                    // Add empty corner cell
+                    tableHTML += `<th style="background-color:#2c3e50; min-width:130px;"></th>`;
+                    
+                    // Add column headers with inputs
+                    for (let j = 0; j < columns; j++) {
+                        tableHTML += `<th class="header-cell"><input type="text" placeholder="Column ${j+1}" value="Column ${j+1}"></th>`;
+                    }
+                    
+                    tableHTML += '</tr></thead><tbody>';
+                    
+                    // Add rows with row headers and data cells
+                    for (let i = 0; i < rows; i++) {
+                        tableHTML += `<tr>`;
+                        tableHTML += `<th class="header-cell" style="background-color:#2c3e50;"><input type="text" placeholder="Row ${i+1}" value="Row ${i+1}"></th>`;
+                        
+                        for (let j = 0; j < columns; j++) {
+                            tableHTML += `<td data-row="${i}" data-col="${j}">${tableData[section][i][j]}</td>`;
+                        }
+                        
+                        tableHTML += '</tr>';
+                    }
+                    
+                    tableHTML += '</tbody></table>';
+                    
+                    tableWrapper.innerHTML = tableHTML;
+                    tableContainer.classList.remove('hidden');
+                    
+                    // Add event listeners to header inputs
+                    const headerInputs = document.querySelectorAll(`#${section}-table .header-cell input`);
+                    headerInputs.forEach(input => {
+                        // Fix for text duplication issue
+                        input.addEventListener('focus', function() {
+                            this.select();
+                        });
+                    });
+                    
+                    // Add click event to table cells for editing
+                    const tableCells = document.querySelectorAll(`#${section}-table td`);
+                    tableCells.forEach(cell => {
+                        cell.addEventListener('click', function() {
+                            if (isEditing[section]) {
+                                const row = this.getAttribute('data-row');
+                                const col = this.getAttribute('data-col');
+                                const currentValue = tableData[section][row][col];
+                                
+                                this.innerHTML = `<input type="text" value="${currentValue}" data-row="${row}" data-col="${col}">`;
+                                
+                                const input = this.querySelector('input');
+                                input.focus();
+                                input.select();
+                                
+                                input.addEventListener('blur', function() {
+                                    saveCellValue(section, this);
+                                });
+                                
+                                input.addEventListener('keypress', function(e) {
+                                    if (e.key === 'Enter') {
+                                        saveCellValue(section, this);
+                                    }
+                                });
+                            }
+                        });
+                    });
+                });
+                
+                // Toggle edit mode
+                editBtn.addEventListener('click', function() {
+                    isEditing[section] = !isEditing[section];
+                    
+                    if (isEditing[section]) {
+                        editBtn.textContent = 'Finish Editing';
+                        editBtn.classList.remove('btn-success');
+                        editBtn.classList.add('btn-warning');
+                    } else {
+                        editBtn.textContent = 'Edit Table';
+                        editBtn.classList.remove('btn-warning');
+                        editBtn.classList.add('btn-success');
+                    }
+                });
+                
+                // Export table as text
+                exportBtn.addEventListener('click', function() {
+                    const rows = parseInt(document.getElementById(`${section}-rows`).value);
+                    const columns = parseInt(document.getElementById(`${section}-columns`).value);
+                    const title = document.getElementById(`${section}-title`).value || `${section.charAt(0).toUpperCase() + section.slice(1)} Table`;
+                    
+                    // Get column headers
+                    const colHeaders = [];
+                    const colInputs = document.querySelectorAll(`#${section}-table thead .header-cell input`);
+                    colInputs.forEach((input, index) => {
+                        if (index > 0) { // Skip the first empty header
+                            colHeaders.push(input.value);
+                        }
+                    });
+                    
+                    // Get row headers
+                    const rowHeaders = [];
+                    const rowInputs = document.querySelectorAll(`#${section}-table tbody .header-cell input`);
+                    rowInputs.forEach(input => {
+                        rowHeaders.push(input.value);
+                    });
+                    
+                    let exportText = `${title}\n\n`;
+                    
+                    // Add column headers
+                    exportText += '\t';
+                    colHeaders.forEach(header => {
+                        exportText += header + '\t';
+                    });
+                    exportText += '\n';
+                    
+                    // Add rows with data
+                    for (let i = 0; i < rows; i++) {
+                        exportText += rowHeaders[i] + '\t';
+                        
+                        for (let j = 0; j < columns; j++) {
+                            exportText += (tableData[section][i][j] || '') + '\t';
+                        }
+                        
+                        exportText += '\n';
+                    }
+                    
+                    // Create a temporary textarea to copy the text
+                    const textArea = document.createElement('textarea');
+                    textArea.value = exportText;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                    
+                    alert(`${title} copied to clipboard!`);
+                });
+                
+                // Reset table
+                resetBtn.addEventListener('click', function() {
+                    if (confirm('Are you sure you want to reset this table? All data will be lost.')) {
+                        tableWrapper.innerHTML = '';
+                        tableContainer.classList.add('hidden');
+                        tableData[section] = [];
+                        isEditing[section] = false;
+                        editBtn.textContent = 'Edit Table';
+                        editBtn.classList.remove('btn-warning');
+                        editBtn.classList.add('btn-success');
+                    }
+                });
+            }
+            
+            // Helper function to save cell value
+            function saveCellValue(section, input) {
+                const row = input.getAttribute('data-row');
+                const col = input.getAttribute('data-col');
+                const value = input.value;
+                
+                tableData[section][row][col] = value;
+                
+                const cell = document.querySelector(`#${section}-table td[data-row="${row}"][data-col="${col}"]`);
+                cell.innerHTML = value;
+            }
+        });
+    </script>
+</body>
+</html>
